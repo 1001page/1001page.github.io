@@ -215,6 +215,19 @@ function queryComment(postId, succeedFn, failedFn) {
 	})
 }
 
+function deleteComment(commentId, succeedFn, failedFn){
+	var qry = new AV.Query(Comment);
+	qry.get(commentId).then(function(comment){
+		return comment.destroy();
+	}, function(object, error){
+		logErr('query comment failed');
+	}).then(function(post){
+		succeedFn();
+	}, function(object, error){
+		failedFn(object, error);
+	})
+}
+
 function isBoxEmpty(box) {
 	var text = $(box).text();
 	var html = $(box).html();
@@ -236,6 +249,10 @@ function getCommentList(elm){
 
 function getPostBox(elm){
 	return $(elm).closest('.post-item').find('.post-box');
+}
+
+function getCommentId(elm){
+	return $(elm).closest('.comment-item').data('commentId');
 }
 
 function registEvent() {
@@ -331,8 +348,7 @@ function registEvent() {
 	
 	$('#postList').on({
 		click: function(){
-			var _this = this;
-			var postBox = getPostBox(this);
+			alert('该功能尚未开发完成.');
 		}
 	}, 'span.edit');
 	
@@ -406,5 +422,25 @@ function registEvent() {
 			$(this).closest('.new-comment-item').find('.placeholder').removeClass('hide');
 		}
 	},'.cancel-comment-btn');
+	
+	$('#postList').on({
+		click: function(){
+			$(this).closest('.comment-item').find('.comment-date').toggleClass('hide');
+		}
+	}, '.comment-item .comment-box');
+	
+	$('#postList').on({
+		click:function(){
+			
+			var _this = this;
+			if(confirm('您确定要删除评论吗')){
+				deleteComment(getCommentId(this), function(){
+					$(_this).closest('.comment-item').remove();
+				},function(object, error){
+					logErr('delete comment failed', error);
+				});
+			}
+		}
+	}, 'span.delete-comment');
 
 }

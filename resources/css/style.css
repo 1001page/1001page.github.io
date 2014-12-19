@@ -172,7 +172,6 @@ body {
 
 #createPostBtn {
   float: right;
- /*  margin-right: 28px; */
   padding-left: 20px;
   padding-right: 16px;
   letter-spacing: 4px;
@@ -209,6 +208,9 @@ body {
   color: #90939a;
   float: right;
   cursor: pointer;
+}
+.post-info span.updatedDate{
+  cursor:auto;
 }
 
 .post-info span:hover {
@@ -290,6 +292,35 @@ body {
   background-color: #F2E7E7;
 }
 
+.comment-item .comment-box{
+  cursor:pointer;
+}
+
+.comment-item .comment-date{
+  padding: 0px 15px 10px 15px;
+}
+.comment-date span{
+    margin-right: 15px;
+  font-size: 12px;
+  color: #90939a;
+  float: right;
+}
+
+.comment-date .delete-comment{
+  cursor: pointer;
+}
+
+.comment-item .comment-date:after{
+  clear: both;
+  display: block;
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+  content: ' ';
+}
+
+
+
 
 /* adjust for ckeditor */
 pre{
@@ -345,6 +376,10 @@ pre{
   padding: 15px;
 }
 
+.padding-v-15{
+  padding:15px 0px;
+}
+
 .bg-white {
   background-color: white;
 }
@@ -355,5 +390,9 @@ pre{
 
 .fg-white {
   color: white;
+}
+
+.r-float{
+  float:right;
 }
 
