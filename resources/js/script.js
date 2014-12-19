@@ -2,11 +2,7 @@ var Tag = AV.Object.extend('Tag');
 var Post = AV.Object.extend('Post');
 var Comment = AV.Object.extend('Comment');
 
-function logErr(msg, error) {
-	if (console && console.error) {
-		console.error(msg + " . Error code: " + error.code + " . Error message: " + error.message);
-	}
-}
+
 
 // 加载标签
 function loadTag() {
@@ -133,7 +129,7 @@ function savePostSucceedFn(post, text, html){
 }
 
 function saveTags(tags, postId) {
-
+debugger;
 	if (!tags || tags.length == 0) {
 		return;
 	}
@@ -271,28 +267,14 @@ function registEvent() {
 		if(!newPostBox.data('ckeditor')){
 			newPostBox.ckeditor();
 			/*.on('paste', function(e){
-				// 黏贴后续会触发blur事件.
+				// 黏贴后续会触发post-box的blur事件.
 				newPostBox.data('pasteEvent', true);
 			});*/
 		}
 		
 	});
 
-	$('#newPostItem .post-box').blur(function(e) {
-		/*if (isBoxEmpty(this)) {
-			
-			var newPostBox = $('#newPostItem .post-box');
-			// 检查是否由黏贴引起
-			if(newPostBox.data('pasteEvent')){
-				newPostBox.data('pasteEvent', false);
-				return;
-			}
-			$('#newPostItem .editArea').addClass('hide');
-			$('#newPostItem .placeholder').removeClass('hide');
-			$('#newPostItem .post-box').addClass('top-radius');
-			$('#postList .post-item').removeClass('opacity01');
-		}*/
-	}).keyup(function(e) {
+	$('#newPostItem .post-box').keyup(function(e) {
 		if (isBoxEmpty(this)) {
 			$('#createPostBtn').prop('disabled', true);
 		} else {
@@ -366,7 +348,8 @@ function registEvent() {
 	
 	$('#postList').on({
 		click: function(){
-			$(this).closest('.post-info').find('.edit').toggleClass('hide').end().find('.delete').toggleClass('hide');
+			$(this).closest('.post-info').find('.edit').toggleClass('hide').end().find('.delete').toggleClass('hide')
+			.end().find('.updatedDate').toggleClass('hide');
 			//$(this).next().next().toggleClass('hide').next().toggleClass('hide');
 		}
 	}, 'span.more');
@@ -443,4 +426,11 @@ function registEvent() {
 		}
 	}, 'span.delete-comment');
 
+}
+
+var debugOn = true;
+function logErr(msg, error) {
+	if (debugOn && console && console.error) {
+		console.error(msg + "\nError code: " + error.code + "\nError message: " + error.message);
+	}
 }
