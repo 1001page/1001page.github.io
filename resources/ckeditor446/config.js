@@ -13,7 +13,7 @@ CKEDITOR.editorConfig = function( config ) {
 	                    , 'Blockquote' , 'Link', 'Unlink','HorizontalRule','PageBreak', 'JustifyLeft'
 	                    , 'JustifyCenter', 'JustifyRight', 'JustifyBlock','NumberedList','BulletedList']
 	                  ,'/',
-	                    ['Outdent','Indent','Bold','Italic','Strike','TextColor', 'BGColor' ,
+	                    ['Uploadcare','Outdent','Indent','Bold','Italic','Strike','TextColor', 'BGColor' ,
 	                    'RemoveFormat','Font', 'FontSize'
 	                      ]
 	              ];
@@ -40,7 +40,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.sharedSpaces = {
 		    top: 'editorToolbar'
 		};
-	config.extraPlugins='sharedspace,codesnippet,font';
+	config.extraPlugins='sharedspace,codesnippet,font,uploadcare';
 
 	config.removePlugins= 'floatingspace,resize,elementspath';
 };
