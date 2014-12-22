@@ -21,7 +21,7 @@ CKEDITOR.editorConfig = function( config ) {
 	//config.toolbar = null;
 	config.font_names=' 宋体/宋体;黑体/黑体;仿宋/仿宋_GB2312;楷体/楷体_GB2312;隶书/隶书;幼圆/幼圆;微软雅黑/微软雅黑;' + config.font_names;
 	
-	config.font_defaultLabel = '宋体';
+	//config.font_defaultLabel = '宋体';
 	config.fontSize_defaultLabel = '12px';
 	config.codeSnippet_languages = {
 			coffeescript:'CoffeeScript',
