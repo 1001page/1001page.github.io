@@ -131,9 +131,10 @@ function deletePost(postId, sucFn, failFn) {
 	var qry = new AV.Query(Post);
 	qry.get(postId).then(function(post) {
 		if (post.get('isRecycled')) {
-			return AV.Promise.error({
+			/*return AV.Promise.error({
 				message : '回收站的内容站长会处理的~'
-			});
+			});*/
+			return post.destroy();
 		} else {
 			post.set('isRecycled', true);
 			post.set('isArchived', false);

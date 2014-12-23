@@ -257,7 +257,11 @@ function registUIiEventHandle() {
 				deletePost(getPostId(this), function() {
 					$(_this).closest('.post-item').remove();
 				}, function(err) {
-					alert('删除文章失败 \n' + err.message);
+					if(err.code==1){
+						alert('删除文章失败\n回收站的内容站长会处理的~');
+					}else{
+						alert('删除文章失败 \n' + err.message);
+					}
 				})
 			}
 		}
