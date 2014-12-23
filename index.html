@@ -15,7 +15,8 @@
 <script src="resources/jquery/jquery-1.11.1.min.js"></script>
 <script src="resources/bootstrap331/js/bootstrap.min.js"></script>
 <script src="resources/avos/av-mini.js"></script>
-<script src="resources/js/script.js"></script>
+<script src="resources/js/leanScript.js"></script>
+<script src="resources/js/uiScript.js"></script>
 <script src="resources/ckeditor446/ckeditor.js"></script>
 <script src="resources/ckeditor446/adapters/jquery.js"></script>
 </head>
@@ -28,7 +29,10 @@
       <div class="face-text">
         <span>发现</span><span>·</span><span>表达</span>
       </div>
-      <div id="tagPanel"></div>
+      <div id="tagPanel">
+        <div id="tagPanelContent">
+        </div>
+      </div>    
     </div>
 
     <div class="main-content">
@@ -44,13 +48,12 @@
             <button class="btn btn-success" id="createPostBtn" disabled type="button" title="按Ctrl Enter保存">保存</button>
             <button class="btn btn-default" id="cancelPostBtn" type="button" title="按Esc取消">取消</button>
           </div>
-          </div>
-          
+          </div>          
         </div>
         
       </div>
       <div id="postList">
-        <div id="loadingPostInfo" class="hide">获取数据中...</div>
+        <div id="loadingPost" class="hide">获取数据中...</div>
         <div id="morePost" class="hide">更多</div>
       </div>
     </div>
@@ -67,10 +70,13 @@
       <div class="post-box-container"></div>
       <div class="post-info bg-white">
         <span class="more" title="更多">···</span> 
-        <span class="comment">评论</span>       
+        <span class="comment hide">评论</span>       
         <span class="edit hide">编辑</span>
-        <span class="delete hide">删除</span>        
-        <span class="updatedDate hide">2014-12-07</span>
+        <span class="delete hide">删除</span>
+        <span class="recovery hide">还原</span>       
+        <span class="archive hide">归档</span>  
+        <span class="unArchive hide">取消归档</span> 
+        <span class="updatedDate hide"></span>
         
       </div>
       <div class="comment-info hide">
@@ -95,23 +101,23 @@
       <div class="comment-box-container"></div>
       <div class="comment-date hide">
         <span class="delete-comment r-float">删除</span>
-        <span class="createdDate r-float">2014-12-19</span>
+        <span class="created-date r-float"></span>
       </div>
     </div>
   </div>
-  
+
   <script>
-  	CKEDITOR.disableAutoInline = true;
-  	UPLOADCARE_LOCALE = "zh";
-    UPLOADCARE_TABS = "file url";
+    UPLOADCARE_PUBLIC_KEY = 'demopublickey';
+    UPLOADCARE_LOCALE = 'zh';
+    UPLOADCARE_TABS = 'file url';
     UPLOADCARE_AUTOSTORE = true;
-    UPLOADCARE_PUBLIC_KEY = "65e929c433147a15a322";
-  	var appId = 'ls5hs43zj10q1xjor1f04stok7ulrlovytrsxumpas5mybpa';
-  	var appKey = 'n7fvb8qn3e5vi96dkqzqqdgt8l6xyi1thxj3d8l22onrkaw3';
-  	AV.initialize(appId, appKey);
-	loadTag();
-	queryPost(0, 8);
-	registEvent();
+    CKEDITOR.disableAutoInline = true;
+    APPID = 'ls5hs43zj10q1xjor1f04stok7ulrlovytrsxumpas5mybpa';
+    APPID2 = 'n7fvb8qn3e5vi96dkqzqqdgt8l6xyi1thxj3d8l22onrkaw3';
+    AV.initialize(APPID, APPID2);
+    loadTag();
+    loadPost();
+    registUIiEventHandle();
   </script>
 </body>
 </html>
