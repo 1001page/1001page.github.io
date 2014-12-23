@@ -106,7 +106,8 @@ function makePostInfo(post) {
 		postId : post.id,
 		isArchived : post.get('isArchived'),
 		isRecycled : post.get('isRecycled'),
-		notCatged : post.get('notCatged')
+		notCatged : post.get('notCatged'),
+		updatedTime : post.get('updatedTime')
 	};
 }
 
@@ -136,10 +137,19 @@ function getCommentList(elm) {
 function getCommentId(elm) {
 	return $(elm).closest('.comment-item').data('commentId');
 }
+function getDate(milliseconds) {
+	var d = new Date();
+	d.setTime(milliseconds);
+	var year = d.getFullYear();
+	var month = d.getMonth() + 1;
+	var date = d.getDate();
+	return year + '/' + month + '/' + date;
+}
 
 // 注册页面元素事件
 function registUIiEventHandle() {
 
+	// 查询标签下的文章
 	$('#tagPanel').on({
 		click : function() {
 			qryPostByTag($(this).data('tagId'), $(this).text(), function(posts) {
@@ -150,6 +160,7 @@ function registUIiEventHandle() {
 		}
 	}, ".tag");
 
+	// 显示新增文章
 	$('#newPostItem .placeholder').click(function() {
 		$(this).addClass('hide');
 		$('#newPostItem .editArea').removeClass('hide');
@@ -160,6 +171,7 @@ function registUIiEventHandle() {
 		}
 	});
 
+	// 检测输入内容
 	$('#newPostItem .post-box').keyup(function(e) {
 		if (isBoxEmpty(this)) {
 			$('#createPostBtn').prop('disabled', true);
@@ -174,6 +186,7 @@ function registUIiEventHandle() {
 		}
 	});
 
+	// 创建文章
 	$('#createPostBtn').click(
 			function() {
 				$(this).text('正在保存');
@@ -195,6 +208,7 @@ function registUIiEventHandle() {
 				});
 			});
 
+	// 取消创建文章
 	$('#cancelPostBtn').click(function() {
 		$('#newPostItem .editArea').addClass('hide');
 		$('#newPostItem .placeholder').removeClass('hide');
@@ -202,6 +216,7 @@ function registUIiEventHandle() {
 		$('#postList .post-item').removeClass('opacity01');
 	});
 
+	// 显示评论内容
 	$('#postList').on(
 			{
 				click : function() {
@@ -214,10 +229,12 @@ function registUIiEventHandle() {
 						$(_this).data('queryed', true);
 						var commentList = getCommentList(_this);
 						for (var i = 0; i < comments.length; i++) {
-							var commentId = comments[i].id;
-							var html = comments[i].get('html');
-							$('#commentItemTempl').clone().removeAttr('id').data('commentId', comments[i].id).find('.comment-box-container').html(comments[i].get('html')).end()
-									.appendTo(commentList);
+							var comment = comments[i];
+							var commentId = comment.id;
+							var html = comment.get('html');
+							var createdTime = comment.get('createdTime');
+							$('#commentItemTempl').clone().removeAttr('id').data('commentId', commentId).data('createdTime', createdTime).find('.comment-box-container').html(
+									comments[i].get('html')).end().appendTo(commentList);
 						}
 					}, function(error) {
 						logErr('query comments failed.', error);
@@ -225,12 +242,14 @@ function registUIiEventHandle() {
 				}
 			}, 'span.comment');
 
+	// 编辑文章
 	$('#postList').on({
 		click : function() {
 			alert('该功能尚未开发完成.');
 		}
 	}, 'span.edit');
 
+	// 删除文章
 	$('#postList').on({
 		click : function() {
 			var _this = this;
@@ -244,6 +263,7 @@ function registUIiEventHandle() {
 		}
 	}, 'span.delete');
 
+	// 从回收站还原文章
 	$('#postList').on({
 		click : function() {
 			var _this = this;
@@ -255,17 +275,7 @@ function registUIiEventHandle() {
 		}
 	}, 'span.recovery');
 
-	$('#postList').on({
-		click : function() {
-			var _this = this;
-			unArchive(getPostId(this), function() {
-				$(_this).closest('.post-item').remove();
-			}, function(err) {
-				alert('取消归档失败 \n' + err.message);
-			})
-		}
-	}, 'span.unArchive');
-
+	// 归档
 	$('#postList').on({
 		click : function() {
 			var _this = this;
@@ -277,13 +287,27 @@ function registUIiEventHandle() {
 		}
 	}, 'span.archive');
 
+	// 取消归档
+	$('#postList').on({
+		click : function() {
+			var _this = this;
+			unArchive(getPostId(this), function() {
+				$(_this).closest('.post-item').remove();
+			}, function(err) {
+				alert('取消归档失败 \n' + err.message);
+			})
+		}
+	}, 'span.unArchive');
+
+	// 显示更多信息
 	$('#postList').on({
 		click : function() {
 			var $postInfo = $(this).closest('.post-info');
 			var expanded = !$(this).data('expanded');
 			$(this).data('expanded', expanded);
 			if (expanded) {
-				$postInfo.find('.updatedDate').removeClass('hide');
+				var date = getDate(getPostInfo(this).updatedTime);
+				$postInfo.find('.updatedDate').removeClass('hide').text(date);
 				$postInfo.find('.delete').removeClass('hide');
 				$postInfo.find('.edit').removeClass('hide');
 				$postInfo.find('.comment').removeClass('hide');
@@ -296,7 +320,6 @@ function registUIiEventHandle() {
 					$postInfo.find('.archive').addClass('hide');
 					$postInfo.find('.unArchive').removeClass('hide');
 				}
-
 			} else {
 				$postInfo.find('.updatedDate').addClass('hide');
 				$postInfo.find('.delete').addClass('hide');
@@ -306,10 +329,10 @@ function registUIiEventHandle() {
 				$postInfo.find('.recovery').addClass('hide');
 				$postInfo.find('.unArchive').addClass('hide');
 			}
-
 		}
 	}, 'span.more');
 
+	// 打开评论输入框
 	$('#postList').on({
 		click : function() {
 			$(this).addClass('hide');
@@ -317,6 +340,7 @@ function registUIiEventHandle() {
 		}
 	}, '.new-comment-item .placeholder');
 
+	// 检测评论框内容及快捷键绑定
 	$('#postList').on({
 		keyup : function(e) {
 			var createCommentBtn = $(this).closest('.post-item').find('.create-comment-btn');
@@ -336,22 +360,24 @@ function registUIiEventHandle() {
 	}, '.new-comment-item .comment-box');
 
 	// 新增评论
-	$('#postList').on({
-		click : function() {
-			var btn = $(this).text('正在保存');
-			var commentList = $(this).closest('.post-item').find('.comment-list');
-			var postId = $(this).closest('.post-item').data('postId');
-			var containerElm = $(this).closest('.new-comment-item').find('.comment-box-container').clone();
-			containerElm.find('.comment-box').attr('contentEditable', false);
-			createComment(containerElm.text(), containerElm.html(), postId, function(commentId) {
-				var commentItemClone = $('#commentItemTempl').clone().removeAttr('id').data('commentId', commentId).appendTo(commentList);
-				commentItemClone.find('.comment-box-container').html(containerElm.html());
-				btn.text('保存').prop('disabled', true);
-				btn.closest('.new-comment-item').find('.comment-box').html('');
-				btn.closest('.new-comment-item').find('.cancel-comment-btn').click();
-			});
-		}
-	}, '.create-comment-btn');
+	$('#postList').on(
+			{
+				click : function() {
+					var btn = $(this).text('正在保存');
+					var commentList = $(this).closest('.post-item').find('.comment-list');
+					var postId = $(this).closest('.post-item').data('postId');
+					var containerElm = $(this).closest('.new-comment-item').find('.comment-box-container').clone();
+					containerElm.find('.comment-box').attr('contentEditable', false);
+					createComment(containerElm.text(), containerElm.html(), postId, function(commentId) {
+						var commentItemClone = $('#commentItemTempl').clone().removeAttr('id').data('commentId', commentId).data('createdTime', new Date().getTime()).appendTo(
+								commentList);
+						commentItemClone.find('.comment-box-container').html(containerElm.html());
+						btn.text('保存').prop('disabled', true);
+						btn.closest('.new-comment-item').find('.comment-box').html('');
+						btn.closest('.new-comment-item').find('.cancel-comment-btn').click();
+					});
+				}
+			}, '.create-comment-btn');
 
 	// 取消编辑评论
 	$('#postList').on({
@@ -361,12 +387,15 @@ function registUIiEventHandle() {
 		}
 	}, '.cancel-comment-btn');
 
+	// 点击评论框显示日期和删除按钮
 	$('#postList').on({
 		click : function() {
-			$(this).closest('.comment-item').find('.comment-date').toggleClass('hide');
+			var createdDate = getDate($(this).closest('.comment-item').data('createdTime'));
+			$(this).closest('.comment-item').find('.comment-date').toggleClass('hide').find('.created-date').text(createdDate);
 		}
 	}, '.comment-item .comment-box');
 
+	// 删除评论
 	$('#postList').on({
 		click : function() {
 
